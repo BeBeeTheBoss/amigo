@@ -15,6 +15,12 @@ class AuthController extends Controller
 
     public function __construct(protected User $model) {}
 
+    public function getUsers()
+    {
+
+        return $this->model->get();
+    }
+
     public function register(UserRequest $request)
     {
         DB::beginTransaction();
@@ -79,6 +85,22 @@ class AuthController extends Controller
         ];
 
         return sendResponse($data, 200, "Login success! Welcome back from amigo");
+    }
+
+    public function logout()
+    {
+        if (Auth::user()) {
+
+            try {
+                Auth::logout();
+            } catch (\Throwable $th) {
+                return sendResponse(null, 500, "Logout failed!");
+            }
+
+            return sendResponse(null, 200, "Logout success! Promise me that you come back to amigo");
+        }
+
+        return sendResponse(null, 404, "Already logged out");
     }
 
     private function toArray($request)
