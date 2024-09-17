@@ -20,10 +20,10 @@ use App\Http\Controllers\Api\UserController;
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::post('/logout', 'logout');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::group(['prefix' => 'users', 'controller' => UserController::class],function(){
         Route::get('/{id?}','index');

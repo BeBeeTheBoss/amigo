@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -13,6 +14,7 @@ class UserController extends Controller
 
     public function index(Request $request, $id = null)
     {
+
         $data = $id ? $this->model->find($id) : $this->model
             ->when($request->name, function ($query) use ($request) {
                 $name = str_replace(' ', '', $request->name);
@@ -22,7 +24,7 @@ class UserController extends Controller
             })
             ->get();
 
-        if (!$data) {
+        if (!$data || count($data)==0) {
             return sendResponse(null, 404, 'User not found');
         }
 

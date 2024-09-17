@@ -17,7 +17,6 @@ class AuthController extends Controller
 
     public function getUsers()
     {
-
         return $this->model->get();
     }
 
@@ -73,7 +72,7 @@ class AuthController extends Controller
             return sendResponse(null, 401, "The password you entered is incorrect");
         }
 
-        Auth::login($user);
+        Auth::loginUsingId($user->id);
         $token = $user->createToken('Amigo_Token')->plainTextToken;
 
         $user->image = url('storage/profile_images/' . $user->image);
@@ -87,17 +86,18 @@ class AuthController extends Controller
         return sendResponse($data, 200, "Login success! Welcome back from amigo");
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        if (Auth::user()) {
-
+        if (Auth::check()) {
             try {
-                Auth::logout();
-            } catch (\Throwable $th) {
-                return sendResponse(null, 500, "Logout failed!");
-            }
 
-            return sendResponse(null, 200, "Logout success! Promise me that you come back to amigo");
+                Auth::user()->currentAccessToken()->delete();
+
+                return sendResponse(null, 200, "Logout success! Promise me that you come back to amigo");
+            } catch (\Throwable $th) {
+
+                return sendResponse(null, 500, $th->getMessage());
+            }
         }
 
         return sendResponse(null, 404, "Already logged out");
