@@ -22,7 +22,7 @@ class UserController extends Controller
             })->when($request->phone, function ($query) use ($request) {
                 $query->where('phone', $request->phone);
             })
-            ->get();
+            ->paginate(20, ['*'], 'page', $request->page);
 
         if (!$data || count($data)==0) {
             return sendResponse(null, 404, 'User not found');
@@ -55,6 +55,8 @@ class UserController extends Controller
         }
 
         $user->save();
+        $user->image =  $user->image ? url('storage/profile_images/' . $user->image) : null;
+        $user->default_image_path = url('images/default_profile.png');
         return sendResponse($user, 200, 'Your data has been updated');
     }
 }
