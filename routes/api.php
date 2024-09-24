@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'users', 'controller' => UserController::class],function(){
         Route::get('/{id?}','index');
         Route::put('/{id}','update');
+        Route::post('/pfp/update','updatePfp');
     });
 
 });
